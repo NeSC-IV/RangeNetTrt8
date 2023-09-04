@@ -374,7 +374,7 @@ void NetTensorRT::paintPointCloud(
     point.r = r;
     point.g = g;
     point.b = b;
-    point.label = label;
+    point.label = _lable_map[label];
     color_pointcloud.push_back(point);
   }
 }
