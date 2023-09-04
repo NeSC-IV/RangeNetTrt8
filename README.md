@@ -6,7 +6,9 @@
 
 2）**更快的运行速度**：修正了使用 FP16，分割精度降低的问题 [issue#9](https://github.com/PRBonn/rangenet_lib/issues/9)，使模型在保有精度的同时，预测速度大大提升；使用 CUDA 编程对数据进行预处理；使用 libtorch 对数据进行 KNN 后处理（参考 [Here](https://github.com/PRBonn/lidar-bonnetal/blob/master/train/tasks/semantic/postproc/KNN.py)）
 
-3）基于Tensorrt，推理速度更快，占用显存更少（3070Ti约占用800M，推理时间约为35ms）
+3）基于Tensorrt，推理速度更快，占用显存更少（3070Ti约占用800M，推理时间约为35ms），对于大面积点云（路面、建筑）分割效果更好，对于小物体（车辆、行人）分割效果更差。
+
+4）精度RangeNet mIoU 52.2,Cylinder3D 67.8，PVKD 71.2
 
 <p align="center">
 	<img src="assets/000000.png" alt="img" width=50% height=50% />
