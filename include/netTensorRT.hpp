@@ -88,12 +88,12 @@ public:
   void serializeEngine(const std::string &onnx_path,
                        const std::string &engine_path);
   void paintPointCloud(const pcl::PointCloud<PointType> &pointcloud,
-                       pcl::PointCloud<pcl::PointXYZRGB> &color_pointcloud,
+                       pcl::PointCloud<pcl::PointXYZRGBL> &color_pointcloud,
                        int labels[]);
   void prepareBuffer();
   std::vector<void *> _deviceBuffers;
   std::vector<void *> _hostBuffers;
-  pcl::PointCloud<pcl::PointXYZRGB> color_pointcloud_;
+  pcl::PointCloud<pcl::PointXYZRGBL> color_pointcloud_;
   cudaStream_t stream_ = 0;
   cudaEvent_t start_, stop_;
 private:

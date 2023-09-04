@@ -19,7 +19,7 @@ if (DEFINED ENV{PCL_DIR})
   INFO_LOG("Using Custom PCL_DIR：${PCL_DIR}")
 endif ()
 
-find_package(PCL REQUIRED QUIET)
+find_package(PCL REQUIRED COMPONENTS common io registration filters keypoints features visualization range_image surface kdtree segmentation)
 include_directories(${PCL_INCLUDE_DIRS})
 INFO_LOG("PCL_VERSION is ${PCL_VERSION}")
 

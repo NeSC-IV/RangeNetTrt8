@@ -161,12 +161,12 @@ void NetTensorRT::doInfer(const pcl::PointCloud<PointType> &pointcloud_pcl,
   if (this->use_pcl_viewer_) {
 
     // 可视化点云
-    pcl::PointCloud<pcl::PointXYZRGB> color_pointcloud;
+    pcl::PointCloud<pcl::PointXYZRGBL> color_pointcloud;
     paintPointCloud(pointcloud_pcl, color_pointcloud, labels);
     std::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
     // viewer->getRenderWindow()->GlobalWarningDisplayOff();
     viewer->setBackgroundColor(0, 0, 0);
-    viewer->addPointCloud<pcl::PointXYZRGB>(color_pointcloud.makeShared(),
+    viewer->addPointCloud<pcl::PointXYZRGBL>(color_pointcloud.makeShared(),
                                             "sample cloud", 0);
     viewer->setPointCloudRenderingProperties(
         pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
@@ -355,9 +355,9 @@ void NetTensorRT::prepareBuffer() {
 
 void NetTensorRT::paintPointCloud(
     const pcl::PointCloud<PointType> &pointcloud,
-    pcl::PointCloud<pcl::PointXYZRGB> &color_pointcloud, int labels[]) {
+    pcl::PointCloud<pcl::PointXYZRGBL> &color_pointcloud, int labels[]) {
 
-  pcl::PointXYZRGB point;
+  pcl::PointXYZRGBL point;
   int point_num = pointcloud.size();
   for (size_t i = 0; i < point_num; ++i) {
     point.x = pointcloud.points[i].x;
@@ -370,7 +370,11 @@ void NetTensorRT::paintPointCloud(
     uint32_t b = std::get<0>(_argmax_to_rgb[label]);
 
     uint32_t rgb = (r << 16) | (g << 8) | b;
-    point.rgb = *reinterpret_cast<float *>(&rgb);
+    // point.rgb = *reinterpret_cast<float *>(&rgb);
+    point.r = r;
+    point.g = g;
+    point.b = b;
+    point.label = label;
     color_pointcloud.push_back(point);
   }
 }

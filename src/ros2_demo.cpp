@@ -27,9 +27,9 @@ ROS_DEMO::ROS_DEMO() : Node("ros2_demo") {
   std::string model_dir = std::string(file_path.parent_path().parent_path() / "model/");
   RCLCPP_INFO(this->get_logger(), "model_dir: %s", model_dir.c_str());
 
-  pub_ = this->create_publisher<PointCloud2>("/label_pointcloud", 10);
+  pub_ = this->create_publisher<PointCloud2>("/sem_points", 10);
   sub_ = this->create_subscription<PointCloud2>(
-    "/points_raw", 10, std::bind(&ROS_DEMO::pointcloudCallback, this, std::placeholders::_1));
+    "/velodyne_points", 10, std::bind(&ROS_DEMO::pointcloudCallback, this, std::placeholders::_1));
   net_ = std::unique_ptr<rangenet::segmentation::Net>(new rangenet::segmentation::NetTensorRT(model_dir, false));
 }
 
@@ -37,13 +37,17 @@ void ROS_DEMO::pointcloudCallback(
   const PointCloud2::ConstSharedPtr &pc_msg) {
 
   // ROS 消息类型 -> PCL 点云类型
+
+  auto start = std::chrono::high_resolution_clock::now();
   pcl::PointCloud<PointType>::Ptr pc_ros(new pcl::PointCloud<PointType>());
   pcl::fromROSMsg(*pc_msg, *pc_ros);
+  auto listener = std::chrono::high_resolution_clock::now();
 
   // 预测
   auto labels = std::make_unique<int[]>(pc_ros->size());
   net_->doInfer(*pc_ros, labels.get());
-  pcl::PointCloud<pcl::PointXYZRGB> color_pc;
+  pcl::PointCloud<pcl::PointXYZRGBL> color_pc;
+  auto predicter = std::chrono::high_resolution_clock::now();
 
   // 发布点云
   PointCloud2 ros_msg;
@@ -51,6 +55,15 @@ void ROS_DEMO::pointcloudCallback(
   pcl::toROSMsg(color_pc, ros_msg);
   ros_msg.header = pc_msg->header;
   pub_->publish(ros_msg);
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> elapsed = listener - start;
+  std::cout<<"Listener time: "<< elapsed.count()<<" s"<<std::endl;
+  elapsed = predicter - listener;
+  std::cout<<"Predict time: "<< elapsed.count()<<" s"<<std::endl;
+  elapsed = end - predicter;
+  std::cout<<"Publisher time: "<< elapsed.count()<<" s"<<std::endl;
+  elapsed = end - start;
+  std::cout<<"Total time: "<< elapsed.count()<<" s"<<std::endl;
 }
 
 int main(int argc, char **argv) {
