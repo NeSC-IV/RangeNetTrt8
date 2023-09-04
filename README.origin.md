@@ -12,15 +12,14 @@
 
 ## Prerequisites
 
-1）步骤 1：下载和解压缩 libtorch，根据 CUDA 版本选择对应的 libtorch 版本，下载地址见 [Here](https://pytorch.org/get-started/locally/)
+1）步骤 1：下载和解压缩 libtorch
 
 > **Note**
 >
 > 使用过 Conda 环境的 Torch 库，然后发现其速度会相对较慢，后处理部分从 6 ms 到 30 ms
 
-```diff
-- $ wget -c https://download.pytorch.org/libtorch/cu113/libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcu113.zip -O libtorch.zip
-+ https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcu117.zip
+```bash
+$ wget -c https://download.pytorch.org/libtorch/cu113/libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcu113.zip -O libtorch.zip
 $ unzip libtorch.zip
 ```
 
@@ -31,13 +30,12 @@ $ unzip libtorch.zip
 |:------:|:-----------------------:|:--------:|:---------------:|:-----------:|:------------------:|
 | 20.04  |        TITAN RTX        |  8.2.3   | CUDA 11.4.r11.4 | cuDNN 8.2.4 | :heavy_check_mark: |
 | 20.04  | NVIDIA GeForce RTX 3060 | 8.4.1.5  | CUDA 11.3.r11.3 | cuDNN 8.0.5 | :heavy_check_mark: |
-| 20.04  | NVIDIA GeForce RTX 3070Ti | 8.4.3.1  | CUDA 11.7.r11.7 | cuDNN 8.9.4.25 | :heavy_check_mark: |
 | 22.04  | NVIDIA GeForce RTX 3060 | 8.2.5.1  | CUDA 11.3.r11.3 | cuDNN 8.8.0 | :heavy_check_mark: |
 | 22.04  | NVIDIA GeForce RTX 3060 | 8.4.1.5  | CUDA 11.3.r11.3 | cuDNN 8.8.0 | :heavy_check_mark: |
 
 添加环境变量到 ~/.bashrc
 
-```diff
+```bash
 # 示例配置：
 
 # >>> 深度学习配置 >>>
@@ -46,18 +44,15 @@ CUDA_PATH=/usr/local/cuda/bin
 CUDA_LIB_PATH=/usr/local/cuda/lib64
 
 # 导入TensorRT环境
-- export TENSORRT_DIR=${HOME}/Application/TensorRT-8.4.1.5/
-- TENSORRT_PATH=${TENSORRT_DIR}/bin
-- TENSORRT_LIB_PATH=${TENSORRT_DIR}/lib
-+ export LD_LIBRARY_PATH=${HOME}/TensorRT-8.4.3.1/lib:$LD_LIBRARY_PATH
-+ export LIBRARY_PATH=${HOME}/TensorRT-8.4.3.1/lib::$LIBRARY_PATH
-# 导入libtorch环境
-- export Torch_DIR=${HOME}/Application/libtorch/share/cmake/Torch
-- export PATH=${PATH}:${CUDA_PATH}:${TENSORRT_PATH}
-- export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CUDA_LIB_PATH}:${TENSORRT_LIB_PATH}
+export TENSORRT_DIR=${HOME}/Application/TensorRT-8.4.1.5/
+TENSORRT_PATH=${TENSORRT_DIR}/bin
+TENSORRT_LIB_PATH=${TENSORRT_DIR}/lib
 
-+ export Torch_DIR=${HOME}/libtorch/share/cmake/Torch
-+ export LD_LIBRARY_PATH=${HOME}/libtorch/lib:$LD_LIBRARY_PATH
+# 导入libtorch环境
+export Torch_DIR=${HOME}/Application/libtorch/share/cmake/Torch
+
+export PATH=${PATH}:${CUDA_PATH}:${TENSORRT_PATH}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CUDA_LIB_PATH}:${TENSORRT_LIB_PATH}
 ```
 
 3）步骤 3：（可选，若需要使用 ROS 的相关组件）ROS1（Noetic），ROS2（Humble）
@@ -73,16 +68,8 @@ $ pip install catkin_tools trollius numpy
 
 1）步骤一：导入仓库
 
-```diff
-- $ git clone https://github.com/Natsu-Akatsuki/RangeNetTrt8 ~/rangetnet_pp/src
-+ $ cd ~/rangetnet_pp/src
-+ $ git clone https://github.com/NeSC-IV/RangeNetTrt8
-+ $ git clone https://github.com/ros2-gbp/pcl_msgs-release
-+ $ cd pcl_msgs-release
-+ $ git checkout release/humble/pcl_msgs
-+ $ git clone https://github.com/ros-perception/perception_pcl.git
-+ $ cd perception_pcl
-+ $ git checkout ros2
+```bash
+$ git clone https://github.com/Natsu-Akatsuki/RangeNetTrt8 ~/rangetnet_pp/src
 ```
 
 2）步骤二：导入模型文件（在 rangenet_pp/src 下解压缩 model.tar.gz 和新建 data 文件夹，并在该文件夹下按需下载示例代码），相关文件见[百度云](https://pan.baidu.com/s/1iXSWaEfZsfpRps1yvqMOrA?pwd=9394)
