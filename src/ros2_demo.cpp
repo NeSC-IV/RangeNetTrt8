@@ -41,13 +41,11 @@ void ROS_DEMO::pointcloudCallback(
   auto start = std::chrono::high_resolution_clock::now();
   pcl::PointCloud<PointType>::Ptr pc_ros(new pcl::PointCloud<PointType>());
   pcl::fromROSMsg(*pc_msg, *pc_ros);
-  auto listener = std::chrono::high_resolution_clock::now();
 
   // 预测
   auto labels = std::make_unique<int[]>(pc_ros->size());
   net_->doInfer(*pc_ros, labels.get());
   pcl::PointCloud<pcl::PointXYZRGBL> color_pc;
-  auto predicter = std::chrono::high_resolution_clock::now();
 
   // 发布点云
   PointCloud2 ros_msg;
@@ -56,12 +54,6 @@ void ROS_DEMO::pointcloudCallback(
   ros_msg.header = pc_msg->header;
   pub_->publish(ros_msg);
   auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = listener - start;
-  std::cout<<"Listener time: "<< elapsed.count()<<" s"<<std::endl;
-  elapsed = predicter - listener;
-  std::cout<<"Predict time: "<< elapsed.count()<<" s"<<std::endl;
-  elapsed = end - predicter;
-  std::cout<<"Publisher time: "<< elapsed.count()<<" s"<<std::endl;
   elapsed = end - start;
   std::cout<<"Total time: "<< elapsed.count()<<" s"<<std::endl;
 }
