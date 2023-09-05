@@ -54,7 +54,7 @@ void ROS_DEMO::pointcloudCallback(
   ros_msg.header = pc_msg->header;
   pub_->publish(ros_msg);
   auto end = std::chrono::high_resolution_clock::now();
-  elapsed = end - start;
+  std::chrono::duration<double> elapsed = end - start;
   std::cout<<"Total time: "<< elapsed.count()<<" s"<<std::endl;
 }
 
