@@ -27,7 +27,7 @@ ROS_DEMO::ROS_DEMO() : Node("ros2_demo") {
   std::string model_dir = std::string(file_path.parent_path().parent_path() / "model/");
   RCLCPP_INFO(this->get_logger(), "model_dir: %s", model_dir.c_str());
 
-  pub_ = this->create_publisher<PointCloud2>("/sem_points", 10);
+  pub_ = this->create_publisher<PointCloud2>("/label_points", 10);
   sub_ = this->create_subscription<PointCloud2>(
     "/velodyne_points", 10, std::bind(&ROS_DEMO::pointcloudCallback, this, std::placeholders::_1));
   net_ = std::unique_ptr<rangenet::segmentation::Net>(new rangenet::segmentation::NetTensorRT(model_dir, false));
